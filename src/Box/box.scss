@@ -1,8 +1,38 @@
 .box {
-   max-width: 80vw;
-   min-height: 80vh;
-   background-color: red;
+   background-color: darken($color: darkgrey, $amount: 30);
    display: block;
+   position: absolute;
+   top: 10vh;
+   left: 10vw;
+   bottom: 10vh;
+   right: 10vw;
+   opacity: 0.98;
+   z-index: 1;
+
+   backdrop-filter: blur(5rem);
+
+   // entrance
+   animation-duration: 1s;
+   animation-name: entrance;
+   animation-fill-mode: both;
+
+   .exit {
+      position: absolute;
+      top: 0;
+      right: 0;
+      cursor: pointer;
+   }
+}
+
+@keyframes entrance {
+   0% {
+      opacity: 0;
+      transform: scale(0.5, 0.5);
+   }
+   100% {
+      opacity: 0.9;
+      transform: scale(1, 1);
+   }
 }
 
 .container {

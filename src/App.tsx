@@ -1,24 +1,26 @@
-import { createEffect, createSignal, onMount, type Component } from "solid-js"
+import { useContext, type Component } from "solid-js"
 
 import "./App.scss"
 import Box from "./Box"
 import Grid from "./Grid"
-import { boxState } from "./State"
+import Provider, { StateContext } from "./Provider"
 import Title from "./Title"
 
 
 const App: Component = () => {
-   const [box] = boxState
+   const [box] = useContext(StateContext).boxState
 
    return (
-      <div class="crt">
-         <div class="App">
-            <div class="refresh"/>
-            <Title />
-            <Grid />
-            {box() !== 'closed' && <Box />}
+      <Provider>
+         <div class="crt">
+            <div class="App">
+               <div class="refresh"/>
+               <Title />
+               <Grid />
+               {box() !== 'closed' && <Box />}
+            </div>
          </div>
-      </div>
+      </Provider>
    )
 }
 

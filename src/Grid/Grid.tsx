@@ -3,7 +3,7 @@ import Icon from "../Icon"
 import './grid.scss'
 
 const Grid = (): JSXElement => {
-   const grid = Array.from({length:5},(v,k)=>k+1).map(_ => <Icon />)
+   const grid = Array.from({length:5},(v,k)=>k+1).map(_ => <Icon type="duck"/>)
 
    return <div class="grid">{grid}</div>
 }

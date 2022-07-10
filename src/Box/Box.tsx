@@ -1,9 +1,19 @@
-import { JSXElement } from "solid-js";
+import { JSXElement, useContext } from "solid-js";
+import { StateContext } from "../Provider";
 
 import './box.scss'
 
 const Box = (): JSXElement => {
-   return <div class="box container">Box</div>
+   const appState = useContext(StateContext)
+
+   return (
+      <div id="box" class="box container">
+         <div>Box</div>
+         <div class="exit" onClick={appState.closeBox}>
+            ✖
+         </div>
+      </div>
+   )
 }
 
 export default Box
