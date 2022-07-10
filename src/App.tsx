@@ -1,19 +1,23 @@
-import type { Component } from "solid-js"
+import { createEffect, createSignal, onMount, type Component } from "solid-js"
 
-import logo from "./logo.svg"
-import styles from "./App.module.css"
-import Icon from "./Icon"
+import "./App.scss"
+import Box from "./Box"
+import Grid from "./Grid"
+import { boxState } from "./State"
+import Title from "./Title"
+
 
 const App: Component = () => {
-   const grid = Array.from({length:5},(v,k)=>k+1).map(_ => <Icon />)
+   const [box] = boxState
 
    return (
-      <div class={styles.crt}>
-      <div class={styles.refresh}/>
-
-      <div class={styles.App}>
-         {grid}
-      </div>
+      <div class="crt">
+         <div class="App">
+            <div class="refresh"/>
+            <Title />
+            <Grid />
+            {box() !== 'closed' && <Box />}
+         </div>
       </div>
    )
 }
