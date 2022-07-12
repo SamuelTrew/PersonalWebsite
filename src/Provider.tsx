@@ -12,15 +12,10 @@ export const StateContext = createContext<AppState>(state)
 type PossibleStates = AppState
 type States = [Context<PossibleStates>, PossibleStates][]
 
-const Provider = ({children}: ProviderProps) => {
-   const states: States = [
-      [StateContext, state]
-   ]
+const Provider = ({ children }: ProviderProps) => {
+   const states: States = [[StateContext, state]]
 
-   return states.reduce(
-      (acc, [Context, state]) => <Context.Provider value={state}>{acc}</Context.Provider>,
-      children
-   )
+   return states.reduce((acc, [Context, state]) => <Context.Provider value={state}>{acc}</Context.Provider>, children)
 }
 
 export default Provider

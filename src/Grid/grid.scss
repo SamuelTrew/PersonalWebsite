@@ -1,8 +1,14 @@
 .grid {
-   display: flex;
-   flex-direction: row;
-   align-items: center;
-   justify-content: center;
-   flex-wrap: wrap;
+   display: grid;
    max-height: 80vh;
+
+   .grid-column {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      grid-row-start: 1;
+      grid-row-end: 5;
+      margin: auto;
+   }
 }

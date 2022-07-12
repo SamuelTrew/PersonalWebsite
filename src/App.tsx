@@ -6,7 +6,6 @@ import Grid from "./Grid"
 import Provider, { StateContext } from "./Provider"
 import Title from "./Title"
 
-
 const App: Component = () => {
    const [box] = useContext(StateContext).boxState
 
@@ -14,10 +13,10 @@ const App: Component = () => {
       <Provider>
          <div class="crt">
             <div class="App">
-               <div class="refresh"/>
+               <div class="refresh" />
                <Title />
                <Grid />
-               {box() !== 'closed' && <Box />}
+               {box() !== "closed" && <Box />}
             </div>
          </div>
       </Provider>

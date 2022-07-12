@@ -19,8 +19,13 @@
    .exit {
       position: absolute;
       top: 0;
-      right: 0;
+      right: 10px;
       cursor: pointer;
+      font-size: 2rem;
+   }
+
+   .box-title {
+      font-size: 3rem;
    }
 }
 
