@@ -6,6 +6,7 @@ export type Box = "closed" | "duck" | "Solidatus" | "Hadean" | "Occam"
 export default class AppState {
    // Determines the contents of the boxes and which is opened
    boxState = createSignal("closed")
+   windowSize = createSignal(window.innerWidth)
 
    // Handling of closing boxes and duck sizing
    private _boxCloser?: Setter<boolean>

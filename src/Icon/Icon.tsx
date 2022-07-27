@@ -1,6 +1,7 @@
 import { createSignal, JSXElement, onMount, useContext } from "solid-js"
 import { StateContext } from "../Provider"
 import { type Box } from "../State"
+import isMobile from "../utils/isMobile"
 
 import duck from "./duck.svg"
 import "./icon.scss"
@@ -29,6 +30,7 @@ const Icon = ({ type }: IconProps): JSXElement => {
    const appState = useContext(StateContext)
 
    const [box, setBox] = appState.boxState
+   const [windowSize] = appState.windowSize
 
    const onClick = () => {
       setBox(type)
@@ -37,6 +39,18 @@ const Icon = ({ type }: IconProps): JSXElement => {
    }
 
    onMount(() => {
+      if (isMobile()) {
+
+         const fingerMove = ({touches}: TouchEvent) => {
+            if (!ref || !touches[0]) return
+            const currDist = Math.sqrt((touches[0].clientX - getOffset(ref).X) ** 2 + (touches[0].clientY - getOffset(ref).Y) ** 2)
+            if (currDist > MAX_CHANGE) return
+            setDist(currDist)
+         }
+         window.addEventListener("touchmove", fingerMove)
+         return
+      }
+
       const mouseMove = (event: MouseEvent) => {
          if (!ref) return
          const currDist = Math.sqrt((event.clientX - getOffset(ref).X) ** 2 + (event.clientY - getOffset(ref).Y) ** 2)
@@ -46,9 +60,10 @@ const Icon = ({ type }: IconProps): JSXElement => {
 
       window.addEventListener("mousemove", mouseMove)
    })
-   console.log('hi')
 
-   const width = () => (box() !== "closed" ? (selected() ? MAX_SIZE : MIN_SIZE) : Math.max(MAX_SIZE - dist(), MIN_SIZE))
+   const scale = () => (windowSize() / 1000)
+
+   const width = () => scale() * (box() !== "closed" ? (selected() ? MAX_SIZE : MIN_SIZE) : Math.max(MAX_SIZE - dist(), MIN_SIZE))
 
    return (
       <div ref={ref} class="icon" onClick={onClick}>

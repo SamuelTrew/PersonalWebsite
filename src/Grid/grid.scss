@@ -1,14 +1,16 @@
 .grid {
    display: grid;
    max-height: 80vh;
+   grid-template-columns: repeat(5, 10%);
+   grid-template-rows: repeat(5, 10%);
+   gap: 10%;
 
-   .grid-column {
+   div {
       display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      grid-row-start: 1;
-      grid-row-end: 5;
-      margin: auto;
+      width: 200px;
+      height: 200px
    }
 }

@@ -1,4 +1,4 @@
-import { useContext, type Component } from "solid-js"
+import { onMount, useContext, type Component } from "solid-js"
 
 import "./App.scss"
 import Box from "./Box"
@@ -7,7 +7,17 @@ import Provider, { StateContext } from "./Provider"
 import Title from "./Title"
 
 const App: Component = () => {
-   const [box] = useContext(StateContext).boxState
+   const appState = useContext(StateContext)
+   const [box] = appState.boxState
+   const [_, setWindowSize] = appState.windowSize
+
+   onMount(() => {
+      const windowResize = () => {
+         setWindowSize(window.innerWidth)
+      }
+
+      window.addEventListener("resize", windowResize)
+   })
 
    return (
       <Provider>
