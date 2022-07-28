@@ -1,7 +1,6 @@
-import { createSignal, JSXElement, onMount, useContext } from "solid-js"
+import { createSignal, JSXElement, useContext } from "solid-js"
 import { StateContext } from "../Provider"
 import { type Box } from "../State"
-import isMobile from "../utils/isMobile"
 
 import duck from "./duck.svg"
 import "./icon.scss"
@@ -23,14 +22,14 @@ interface IconProps {
 }
 
 const Icon = ({ type }: IconProps): JSXElement => {
-   const [dist, setDist] = createSignal(MAX_CHANGE)
-   const [selected, setSelected] = createSignal(false)
-   let ref: HTMLDivElement | undefined
 
    const appState = useContext(StateContext)
-
-   const [box, setBox] = appState.boxState
    const [windowSize] = appState.windowSize
+   const [mousePosition] = appState.mousePosition
+   const [box, setBox] = appState.boxState
+
+   const [selected, setSelected] = createSignal(false)
+   let ref: HTMLDivElement | undefined
 
    const onClick = () => {
       setBox(type)
@@ -38,32 +37,37 @@ const Icon = ({ type }: IconProps): JSXElement => {
       appState.setSelectedBox(setSelected)
    }
 
-   onMount(() => {
-      if (isMobile()) {
+   const width = () => {
+      // Scale to ensure icons grow properly
+      const scale = () => (windowSize() / 1000)
 
-         const fingerMove = ({touches}: TouchEvent) => {
-            if (!ref || !touches[0]) return
-            const currDist = Math.sqrt((touches[0].clientX - getOffset(ref).X) ** 2 + (touches[0].clientY - getOffset(ref).Y) ** 2)
-            if (currDist > MAX_CHANGE) return
-            setDist(currDist)
+      // When no icon has been selected we calculate size
+      if (box() === "closed" && ref) {
+
+         // Furthest possible distance that an icon is affected by the mouse
+         const furthest = () => 1.3 * (windowSize() / 5)
+
+         // The actual distance the icon is away from the mouse
+         const dist = () => Math.sqrt((mousePosition().x - getOffset(ref).X) ** 2 + (mousePosition().y - getOffset(ref).Y) ** 2)
+
+         // Default when the mouse is too far away
+         if (dist() >= furthest()) {
+            return scale() * MIN_SIZE
          }
-         window.addEventListener("touchmove", fingerMove)
-         return
+
+         // Proximity scale between 0 and 1 for scaling
+         const proximity = () => (furthest() - dist()) / furthest()
+
+         return scale() * (MIN_SIZE + (MAX_CHANGE * proximity()))
       }
 
-      const mouseMove = (event: MouseEvent) => {
-         if (!ref) return
-         const currDist = Math.sqrt((event.clientX - getOffset(ref).X) ** 2 + (event.clientY - getOffset(ref).Y) ** 2)
-         if (currDist > MAX_CHANGE) return
-         setDist(currDist)
+      // When selected, all other icons are minimised while the selected is maximised
+      if (selected()) {
+         return scale() * MAX_SIZE
       }
 
-      window.addEventListener("mousemove", mouseMove)
-   })
-
-   const scale = () => (windowSize() / 1000)
-
-   const width = () => scale() * (box() !== "closed" ? (selected() ? MAX_SIZE : MIN_SIZE) : Math.max(MAX_SIZE - dist(), MIN_SIZE))
+      return scale() * MIN_SIZE
+   }
 
    return (
       <div ref={ref} class="icon" onClick={onClick}>

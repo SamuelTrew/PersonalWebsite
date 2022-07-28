@@ -5,11 +5,13 @@ import Box from "./Box"
 import Grid from "./Grid"
 import Provider, { StateContext } from "./Provider"
 import Title from "./Title"
+import isMobile from "./utils/isMobile"
 
 const App: Component = () => {
    const appState = useContext(StateContext)
    const [box] = appState.boxState
-   const [_, setWindowSize] = appState.windowSize
+   const [, setWindowSize] = appState.windowSize
+   const [, setMousePosition] = appState.mousePosition
 
    onMount(() => {
       const windowResize = () => {
@@ -17,6 +19,22 @@ const App: Component = () => {
       }
 
       window.addEventListener("resize", windowResize)
+   })
+
+   // Setup mouse position depending on platform of user
+   onMount(() => {
+      if (isMobile()) {
+         const fingerMove = ({touches}: TouchEvent) => {
+            setMousePosition({x: touches[0].clientX, y: touches[0].clientY})
+         }
+         window.addEventListener("touchmove", fingerMove)
+      } else {
+         const mouseMove = (event: MouseEvent) => {
+            setMousePosition({x: event.clientX, y: event.clientY})
+         }
+
+         window.addEventListener("mousemove", mouseMove)
+      }
    })
 
    return (
