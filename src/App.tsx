@@ -10,12 +10,14 @@ import isMobile from "./utils/isMobile"
 const App: Component = () => {
    const appState = useContext(StateContext)
    const [box] = appState.boxState
-   const [, setWindowSize] = appState.windowSize
+   const [, setWindowWidth] = appState.windowWidth
+   const [, setWindowHeight] = appState.windowHeight
    const [, setMousePosition] = appState.mousePosition
 
    onMount(() => {
       const windowResize = () => {
-         setWindowSize(window.innerWidth)
+         setWindowWidth(window.innerWidth)
+         setWindowHeight(window.innerHeight)
       }
 
       window.addEventListener("resize", windowResize)
@@ -25,7 +27,7 @@ const App: Component = () => {
    onMount(() => {
       if (isMobile()) {
          const fingerMove = ({touches}: TouchEvent) => {
-            setMousePosition({x: touches[0].clientX, y: touches[0].clientY})
+            setMousePosition({x: touches[0]?.clientX ?? 0, y: touches[0]?.clientY ?? 0})
          }
          window.addEventListener("touchmove", fingerMove)
       } else {

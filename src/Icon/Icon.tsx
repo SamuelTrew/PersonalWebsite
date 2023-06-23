@@ -24,7 +24,7 @@ interface IconProps {
 const Icon = ({ type }: IconProps): JSXElement => {
 
    const appState = useContext(StateContext)
-   const [windowSize] = appState.windowSize
+   const [windowWidth] = appState.windowWidth
    const [mousePosition] = appState.mousePosition
    const [box, setBox] = appState.boxState
 
@@ -39,13 +39,13 @@ const Icon = ({ type }: IconProps): JSXElement => {
 
    const width = () => {
       // Scale to ensure icons grow properly
-      const scale = () => (windowSize() / 1000)
+      const scale = () => (windowWidth() / 1000)
 
       // When no icon has been selected we calculate size
       if (box() === "closed" && ref) {
 
          // Furthest possible distance that an icon is affected by the mouse
-         const furthest = () => 1.3 * (windowSize() / 5)
+         const furthest = () => 1.3 * (windowWidth() / 5)
 
          // The actual distance the icon is away from the mouse
          const dist = () => Math.sqrt((mousePosition().x - getOffset(ref).X) ** 2 + (mousePosition().y - getOffset(ref).Y) ** 2)

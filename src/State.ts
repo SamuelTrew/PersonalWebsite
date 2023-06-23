@@ -5,10 +5,11 @@ export type Box = "closed" | "duck" | "Solidatus" | "Hadean" | "Occam"
 
 export default class AppState {
    // Determines the contents of the boxes and which is opened
-   boxState = createSignal("closed")
+   boxState = createSignal<Box>("closed")
 
-   // Keeps track of window width for state changes
-   windowSize = createSignal(window.innerWidth)
+   // Keeps track of window dims for state changes
+   windowWidth = createSignal(window.innerWidth)
+   windowHeight = createSignal(window.innerHeight)
 
    // Keeps track of window width for state changes
    mousePosition = createSignal({x: 0, y: 0})
