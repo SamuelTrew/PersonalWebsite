@@ -1,4 +1,4 @@
-import { createSignal, JSXElement, useContext } from "solid-js"
+import { JSXElement, useContext } from "solid-js"
 import { StateContext } from "../Provider"
 import { type Box } from "../State"
 
@@ -13,65 +13,44 @@ const getOffset = (el: HTMLDivElement) => {
    }
 }
 
-const MAX_CHANGE = 100
-const MIN_SIZE = 100
-const MAX_SIZE = 200
-
 interface IconProps {
    type: Box
 }
 
 const Icon = ({ type }: IconProps): JSXElement => {
-
    const appState = useContext(StateContext)
-   const [windowWidth] = appState.windowWidth
    const [mousePosition] = appState.mousePosition
-   const [box, setBox] = appState.boxState
-
-   const [selected, setSelected] = createSignal(false)
+   const [windowWidth] = appState.windowWidth
+   const [windowHeight] = appState.windowHeight
    let ref: HTMLDivElement | undefined
 
-   const onClick = () => {
-      setBox(type)
-      setSelected(true)
-      appState.setSelectedBox(setSelected)
-   }
 
-   const width = () => {
-      // Scale to ensure icons grow properly
-      const scale = () => (windowWidth() / 1000)
+   const actualWidth = () => {
+      if (!ref) return 0
 
-      // When no icon has been selected we calculate size
-      if (box() === "closed" && ref) {
+      const MIN = window.innerWidth / 11
+      const CHANGE = window.innerWidth / 11
 
-         // Furthest possible distance that an icon is affected by the mouse
-         const furthest = () => 1.3 * (windowWidth() / 5)
+      const xOffset = () => Math.abs(getOffset(ref).X - mousePosition().x)
+      const yOffset = () => Math.abs(getOffset(ref).Y - mousePosition().y)
+      const dist = () => Math.sqrt(xOffset()**2 + yOffset()**2)
 
-         // The actual distance the icon is away from the mouse
-         const dist = () => Math.sqrt((mousePosition().x - getOffset(ref).X) ** 2 + (mousePosition().y - getOffset(ref).Y) ** 2)
+      const widthLimit = () => windowWidth() / 11
+      const heightLimit = () => windowHeight() / 11
+      const limit = () => Math.sqrt(widthLimit()**2 + heightLimit()**2)
 
-         // Default when the mouse is too far away
-         if (dist() >= furthest()) {
-            return scale() * MIN_SIZE
-         }
-
-         // Proximity scale between 0 and 1 for scaling
-         const proximity = () => (furthest() - dist()) / furthest()
-
-         return scale() * (MIN_SIZE + (MAX_CHANGE * proximity()))
+      if (dist() >= limit()) {
+         return MIN
       }
 
-      // When selected, all other icons are minimised while the selected is maximised
-      if (selected()) {
-         return scale() * MAX_SIZE
-      }
+      const scale = () => (limit() - dist()) / limit()
 
-      return scale() * MIN_SIZE
+      return Math.round(MIN + scale() * CHANGE)
    }
 
    return (
-      <div ref={ref} class="icon" onClick={onClick}>
-         <img src={duck} alt="duck" width={width()} />
+      <div class="duck" ref={ref}>
+         <img src={duck} alt="duck" width={`${actualWidth()}vw`} />
       </div>
    )
 }
